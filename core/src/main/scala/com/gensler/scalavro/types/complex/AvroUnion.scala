@@ -129,7 +129,7 @@ object AvroUnion {
           subTypeTag,
           extendedProcessedTypes
         ).toOption.isDefined
-      }
+      }.sortBy { subTypeTag => subTypeTag.tpe.typeSymbol.fullName }
 
       if (subTypeTags.nonEmpty) {
         import scala.language.existentials
