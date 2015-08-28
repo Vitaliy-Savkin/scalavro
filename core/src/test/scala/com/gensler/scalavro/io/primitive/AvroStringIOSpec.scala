@@ -24,28 +24,30 @@ class AvroStringIOSpec extends FlatSpec with Matchers {
     avroTypeIO should be (io)
   }
 
+  it should "not allow null strings" in {
+    val out = new ByteArrayOutputStream
+    an[AvroSerializationException[_]] should be thrownBy { io.write(null, out) }
+    an[AvroSerializationException[_]] should be thrownBy { io.writeJson(null) }
+  }
+
   it should "read and write Strings" in {
     val text = "The quick brown fox jumped over the lazy dog."
 
     val out = new ByteArrayOutputStream
     io.write(text, out)
-    io.write(null, out)
 
     val bytes = out.toByteArray
     val in = new ByteArrayInputStream(bytes)
 
     io.read(in).get should equal (text)
-    io.read(in).get should equal (null)
   }
 
   it should "read and write Strings as JSON" in {
     val text = "The quick brown fox jumped over the lazy dog."
 
     val json = io writeJson text
-    val nullJson = io writeJson null
 
     io readJson json should equal (Success(text))
-    io readJson nullJson should equal (Success(null))
   }
 
 }

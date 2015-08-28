@@ -12,7 +12,7 @@ import scala.util.Try
 
 object AvroStringIO extends AvroStringIO
 
-trait AvroStringIO extends AvroNullablePrimitiveTypeIO[String] {
+trait AvroStringIO extends AvroPrimitiveTypeIO[String] {
 
   val avroType = AvroString
 
@@ -22,35 +22,25 @@ trait AvroStringIO extends AvroNullablePrimitiveTypeIO[String] {
 
   protected[scalavro] def write(
     value: String,
-    encoder: BinaryEncoder): Unit =
-    if (value == null) {
-      AvroLongIO.write(UNION_INDEX_NULL, encoder)
-    }
-    else {
-      AvroLongIO.write(UNION_INDEX_VALUE, encoder)
-      encoder writeString value
-    }
+    encoder: BinaryEncoder): Unit = value match {
+    case null => throw new AvroSerializationException(obj = "null", detailedMessage = "Null strings are not allowed. Use Option[String] for nullable strings.")
+    case s    => encoder writeString value
+  }
 
-  def read(decoder: BinaryDecoder): String =
-    AvroLongIO.read(decoder) match {
-      case UNION_INDEX_NULL  => null
-      case UNION_INDEX_VALUE => decoder.readString
-    }
+  def read(decoder: BinaryDecoder) = decoder.readString
 
   ////////////////////////////////////////////////////////////////////////////
   // JSON ENCODING
   ////////////////////////////////////////////////////////////////////////////
 
-  def writePrimitiveJson(value: String) =
-    if (value == null)
-      JsNull
-    else
-      JsString(value)
+  def writePrimitiveJson(value: String) = value match {
+    case null => throw new AvroSerializationException(obj = "null", detailedMessage = "Null strings are not allowed. Use Option[String] for nullable strings.")
+    case s    => JsString(value)
+  }
 
-  def readJson(json: JsValue): Try[String] = Try {
+  def readJson(json: JsValue) = Try {
     json match {
       case JsString(value) => value
-      case JsNull          => null
       case _               => throw new AvroDeserializationException[String]
     }
   }

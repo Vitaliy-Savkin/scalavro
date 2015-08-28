@@ -97,7 +97,7 @@ class AvroTypeSpec extends AvroSpec {
           "type": "record",
           "fields": [{
             "name": "name",
-            "type": ["null", "string"]
+            "type": "string"
           }, {
             "name": "age",
             "type": "int"
@@ -306,7 +306,7 @@ class AvroTypeSpec extends AvroSpec {
     "type": "int"
   }, {
     "name": "word",
-    "type": ["null", "string"],
+    "type": "string",
     "default": "Eureka!"
   }]
 }

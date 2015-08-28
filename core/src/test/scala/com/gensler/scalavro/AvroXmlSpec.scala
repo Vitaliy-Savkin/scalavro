@@ -3,6 +3,7 @@ package com.gensler.scalavro.test
 import scala.collection.mutable
 import scala.util.{ Try, Success, Failure }
 import scala.reflect.runtime.universe._
+import scala.xml.Node
 
 import com.gensler.scalavro.types._
 import com.gensler.scalavro.types.primitive._
@@ -23,7 +24,7 @@ class AvroXmlSpec extends AvroSpec {
 
   it should "allow scala.xml.NodeSeq to be supported as a Seq[Node]" in {
     val nodeSeqType = AvroType[scala.xml.NodeSeq]
-    nodeSeqType.schema should equal (AvroType[Seq[String]].schema)
+    nodeSeqType.schema should equal (AvroType[Seq[Node]].schema)
   }
 
 }

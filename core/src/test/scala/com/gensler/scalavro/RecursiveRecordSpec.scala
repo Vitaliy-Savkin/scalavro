@@ -28,7 +28,7 @@ class RecursiveRecordSpec extends AvroSpec {
   "type": "record",
   "fields": [{
     "name": "data",
-    "type": ["null","string"]
+    "type": "string"
   }, {
     "name": "next",
     "type": ["null", ["com.gensler.scalavro.test.SinglyLinkedStringList", {
