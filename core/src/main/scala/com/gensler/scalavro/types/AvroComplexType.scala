@@ -50,7 +50,7 @@ trait SelfDescribingSchemaHelpers {
 
     avroType match {
 
-      case recordType: AvroRecord[_] => recordType.referencedSchema(resolvedSymbols)
+      case recordType: AvroRecord[_] => recordType.selfContainedSchema(resolvedSymbols)
 
       case namedType: AvroNamedType[_] => {
         if (resolvedSymbols contains namedType.fullyQualifiedName)

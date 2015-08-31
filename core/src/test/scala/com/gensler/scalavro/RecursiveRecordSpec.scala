@@ -21,30 +21,6 @@ class RecursiveRecordSpec extends AvroSpec {
     typeOf[listAvroType.scalaType] =:= typeOf[SinglyLinkedStringList] should be (true)
   }
 
-  it should "produce a schema for a record derived from a recursively defined case class" in {
-    AvroType[SinglyLinkedStringList].schema.toString should equal ("""
-{
-  "name": "com.gensler.scalavro.test.SinglyLinkedStringList",
-  "type": "record",
-  "fields": [{
-    "name": "data",
-    "type": "string"
-  }, {
-    "name": "next",
-    "type": ["null", ["com.gensler.scalavro.test.SinglyLinkedStringList", {
-      "name": "com.gensler.scalavro.Reference",
-      "type": "record",
-      "fields": [{
-        "name": "id",
-        "type": "long"
-      }]
-    }]]
-  }]
-}
-""".replaceAll("\\s", "")
-    )
-  }
-
   it should "compute dependentNamedTypes for a record derived from a recursively defined type" in {
     val aType = AvroType[recursive.A]
     val cType = AvroType[recursive.C]

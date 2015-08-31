@@ -81,47 +81,6 @@ class AvroTypeSpec extends AvroSpec {
       }
       case Failure(cause) => throw cause
     }
-
-    AvroType[Seq[SantaList]].schema.toString should equal ("""
-{
-  "type": "array",
-  "items": [{
-    "name": "com.gensler.scalavro.test.SantaList",
-    "type": "record",
-    "fields": [{
-      "name": "nice",
-      "type": {
-        "type": "array",
-        "items": [{
-          "name": "com.gensler.scalavro.test.Person",
-          "type": "record",
-          "fields": [{
-            "name": "name",
-            "type": "string"
-          }, {
-            "name": "age",
-            "type": "int"
-          }]
-        }, {
-          "name": "com.gensler.scalavro.Reference",
-          "type": "record",
-          "fields": [{
-            "name": "id",
-            "type": "long"
-          }]
-        }]
-      }
-    }, {
-      "name": "naughty",
-      "type": {
-        "type": "array",
-        "items": ["com.gensler.scalavro.test.Person", "com.gensler.scalavro.Reference"]
-      }
-    }]
-  }, "com.gensler.scalavro.Reference"]
-}
-""".replaceAll("\\s", ""))
-
   }
 
   // sets
@@ -241,59 +200,6 @@ class AvroTypeSpec extends AvroSpec {
     santaListRecord.fullyQualifiedName should be ("com.gensler.scalavro.test.SantaList")
     santaListType dependsOn personType should be (true)
     santaListType dependsOn santaListType should be (true)
-  }
-
-  it should "allow circular dependencies among AvroRecord types" in {
-    AvroType[A].schema.toString should equal ("""
-{
-  "name": "com.gensler.scalavro.test.A",
-  "type": "record",
-  "fields": [{
-    "name": "b",
-    "type": [{
-      "name": "com.gensler.scalavro.test.B",
-      "type": "record",
-      "fields": [{
-        "name": "a",
-        "type": ["com.gensler.scalavro.test.A", {
-          "name": "com.gensler.scalavro.Reference",
-          "type": "record",
-          "fields": [{
-            "name": "id",
-            "type": "long"
-          }]
-        }]
-      }]
-    }, "com.gensler.scalavro.Reference"]
-  }]
-}
-""".replaceAll("\\s", ""))
-
-    AvroType[B].schema.toString should equal ("""
-{
-  "name": "com.gensler.scalavro.test.B",
-  "type": "record",
-  "fields": [{
-    "name": "a",
-    "type": [{
-      "name": "com.gensler.scalavro.test.A",
-      "type": "record",
-      "fields": [{
-        "name": "b",
-        "type": ["com.gensler.scalavro.test.B", {
-          "name": "com.gensler.scalavro.Reference",
-          "type": "record",
-          "fields": [{
-            "name": "id",
-            "type": "long"
-          }]
-        }]
-      }]
-    }, "com.gensler.scalavro.Reference"]
-  }]
-}
-""".replaceAll("\\s", ""))
-
   }
 
   it should "expose class-level default arguments in generated schemas" in {
