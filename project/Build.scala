@@ -9,7 +9,8 @@ object Common {
   val PROJECT_NAME = "scalavro"
   val PROJECT_VERSION = "0.7.0-SNAPSHOT"
 
-  val SCALA_VERSION = "2.11.1"
+  val LATEST_SCALA_VERSION = "2.11.7"
+  val MAINTENANCE_SCALA_VERSION = "2.10.5"
   val SCALA_XML_VERSION = "1.0.2"
 
 //////////////////////////////////////////////////////////////////////////////

@@ -25,10 +25,11 @@ version in ThisBuild := Common.PROJECT_VERSION
 
 organization in ThisBuild := Common.ORGANIZATION
 
-scalaVersion in ThisBuild := Common.SCALA_VERSION
+scalaVersion in ThisBuild := Common.LATEST_SCALA_VERSION
+
+crossScalaVersions in ThisBuild := Seq(Common.MAINTENANCE_SCALA_VERSION, Common.LATEST_SCALA_VERSION)
 
 libraryDependencies in ThisBuild ++= Seq(
-      "org.scala-lang" % "scala-reflect" % Common.SCALA_VERSION,
       "org.slf4j" % "slf4j-api" % Common.SLF4J_VERSION,
       "ch.qos.logback" % "logback-classic" % Common.LOGBACK_VERSION % "runtime",
       "org.scalatest" %% "scalatest" % Common.SCALATEST_VERSION % "test"
