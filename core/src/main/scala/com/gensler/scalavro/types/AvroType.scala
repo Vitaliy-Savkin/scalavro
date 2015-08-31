@@ -196,6 +196,8 @@ object AvroType extends Logging {
       typeOf[java.lang.Boolean] -> AvroJavaBoolean,
       typeOf[Seq[Byte]] -> AvroBytes, // TODO: handle arbitrary subclasses of Seq[Byte]
       typeOf[immutable.Seq[Byte]] -> AvroBytes, // TODO: handle arbitrary subclasses of Seq[Byte]
+      typeOf[BigDecimal] -> AvroBigDecimal,
+      //typeOf[java.math.BigDecimal] -> AvroJavaBigDecimal, // TODO: add support of java decimals
       typeOf[Double] -> AvroDouble,
       typeOf[java.lang.Double] -> AvroJavaDouble,
       typeOf[Float] -> AvroFloat,
