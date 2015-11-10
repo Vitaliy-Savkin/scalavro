@@ -297,6 +297,12 @@ object AvroType extends Logging {
           else if (tpe <:< typeOf[FixedData])
             AvroFixed.fromType(processedTypes)(tt.asInstanceOf[TypeTag[FixedData]])
 
+          //sealed trait enum
+          else if (tpe.typeSymbol.asClass.isSealed
+            && !tpe.typeSymbol.asClass.knownDirectSubclasses.isEmpty
+            && tpe.typeSymbol.asClass.knownDirectSubclasses.forall(_.isModuleClass))
+            AvroSealedTraitEnum.fromType(processedTypes)(tt)
+
           // case classes
           else if (tpe <:< typeOf[Product] && tpe.typeSymbol.asClass.isCaseClass)
             AvroRecord.fromType(processedTypes)(tt.asInstanceOf[TypeTag[Product]])

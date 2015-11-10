@@ -6,3 +6,5 @@ libraryDependencies ++= Seq(
       "io.spray" %% "spray-json" % Common.SPRAY_JSON_VERSION,
       "org.apache.avro" % "avro" % Common.AVRO_VERSION
     )
+
+libraryDependencies += "com.jayway.jsonpath" % "json-path" % "2.0.0" % "test"
