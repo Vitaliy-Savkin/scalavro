@@ -47,7 +47,7 @@ val io: AvroTypeIO[Seq[Int]] = intSeqType.io
 
 // binary I/O
 io.write(Seq(1, 2, 3), outputStream)
-val Sucess(readResult) = io read inputStream
+val Success(readResult) = io read inputStream
 
 // json I/O
 val json = io writeJson Seq(1, 2, 3) // [1,2,3]
