@@ -2,7 +2,6 @@ package com.gensler.scalavro.io
 
 import com.gensler.scalavro.error._
 import com.gensler.scalavro.types.{ AvroType, AvroPrimitiveType }
-import com.gensler.scalavro.util.Logging
 
 import org.apache.avro.io.{
   EncoderFactory,
@@ -19,7 +18,7 @@ import spray.json._
 
 import java.io.{ InputStream, OutputStream }
 
-abstract class AvroTypeIO[T: TypeTag] extends Logging {
+abstract class AvroTypeIO[T: TypeTag] {
 
   /**
     * Returns the corresponding AvroType to this AvroTypeIO wrapper.

@@ -7,7 +7,6 @@ import com.gensler.scalavro.types.complex._
 import com.gensler.scalavro.error._
 import com.gensler.scalavro.JsonSchemaProtocol._
 import com.gensler.scalavro.io.AvroTypeIO
-import com.gensler.scalavro.util.Logging
 
 import scala.collection.mutable
 import scala.util.{ Try, Success, Failure }
@@ -178,7 +177,7 @@ abstract class AvroType[T: TypeTag] extends JsonSchemifiable with CanonicalForm 
 /**
   * Companion object for [[AvroType]].
   */
-object AvroType extends Logging {
+object AvroType {
 
   import com.gensler.scalavro.types.primitive._
   import com.gensler.scalavro.types.complex._
