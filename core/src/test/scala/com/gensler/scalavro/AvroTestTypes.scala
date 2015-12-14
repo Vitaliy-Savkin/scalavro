@@ -55,3 +55,18 @@ case class SinglyLinkedStringList(data: String, next: Option[SinglyLinkedStringL
 
 // a case class with default values
 case class Exclamation(volume: Int, word: String = "Eureka!")
+
+//sealed trait enum
+sealed trait Color
+object Color {
+  case object Black extends Color
+  case object White extends Color
+  case object Blue extends Color
+}
+
+case class Car(name: String, color: Color)
+
+object Direction extends Enumeration {
+  type Direction = Value
+  val NORTH, EAST, SOUTH, WEST = Value
+}

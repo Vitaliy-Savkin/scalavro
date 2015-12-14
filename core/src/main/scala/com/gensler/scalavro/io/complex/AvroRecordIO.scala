@@ -95,11 +95,13 @@ case class AvroRecordIO[T](avroType: AvroRecord[T]) extends AvroTypeIO[T]()(avro
         field.fieldType.io.asInstanceOf[AvroTypeIO[Any]].write(value, encoder, references, false)(fieldTag)
       }
       catch {
-        case cause: Throwable => throw new AvroSerializationException(
-          obj,
-          cause,
-          "Could not extract a value for field [%s]" format field.name
-        )
+        case cause: Throwable => {
+          throw new AvroSerializationException(
+            obj,
+            cause,
+            "Could not extract a value for field [%s]" format field.name
+          )
+        }
       }
     }
   }
