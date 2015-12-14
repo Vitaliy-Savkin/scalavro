@@ -1,28 +1,20 @@
 package com.gensler.scalavro.io.complex.test
 
-import scala.util.{ Try, Success, Failure }
-import scala.reflect.runtime.universe._
-
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers
-
-import com.gensler.scalavro.types._
-import com.gensler.scalavro.types.complex._
-import com.gensler.scalavro.io.complex._
-import com.gensler.scalavro.error._
+import java.io.{PipedInputStream, PipedOutputStream}
 
 import com.gensler.scalavro.io.AvroTypeIO
+import com.gensler.scalavro.types._
+import org.scalatest.{FlatSpec, Matchers}
 
-import java.io.{
-  PipedInputStream,
-  PipedOutputStream
-}
+import scala.util.Success
 
 // for testing
 case class Person(name: String, age: Int)
 
 // for testing
 case class SantaList(nice: Seq[Person], naughty: Seq[Person])
+
+case class Knight(name: String, mana: Option[Int] = None)
 
 class AvroRecordIOSpec extends FlatSpec with Matchers {
 
@@ -60,7 +52,7 @@ class AvroRecordIOSpec extends FlatSpec with Matchers {
   }
 
   it should "read and write HandshakeRequest instances" in {
-    import com.gensler.scalavro.protocol.{ HandshakeRequest, MD5 }
+    import com.gensler.scalavro.protocol.{HandshakeRequest, MD5}
 
     val out = new PipedOutputStream
     val in = new PipedInputStream(out)
@@ -100,7 +92,7 @@ class AvroRecordIOSpec extends FlatSpec with Matchers {
     val out = new PipedOutputStream
     val in = new PipedInputStream(out)
 
-    import com.gensler.scalavro.test.{ SinglyLinkedStringList => LL }
+    import com.gensler.scalavro.test.{SinglyLinkedStringList => LL}
 
     val listIO = AvroType[LL].io
 
@@ -118,6 +110,20 @@ class AvroRecordIOSpec extends FlatSpec with Matchers {
     listIO.write(myList, out)
     val Success(readResult) = listIO read in
     readResult should equal (myList)
+  }
+
+  private def check(knight: Knight) = {
+    val knightIO = AvroType[Knight].io
+    val json = knightIO writeJson knight
+    knightIO readJson json should equal (Success(knight))
+  }
+
+  it should "read and write simple records with some optional field as JSON" in {
+    check(Knight("lancelot", Option(3456)))
+  }
+
+  it should "read and write simple records with missing optional field as JSON" in {
+    check(Knight("lancelot", None))
   }
 
   it should "read and write simple records as JSON" in {
