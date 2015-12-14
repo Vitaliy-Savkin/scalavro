@@ -947,7 +947,7 @@ santaListType.io.readJson(json) match {
 
 ### A Neat Fact about Scalavro's IO Capabilities
 
-Scalavro tries to produce read results whose runtime types are as accurate as possible for collections (the supported collection types are `Seq`, `Set`, and `Map`).  It accomplishes this by looking for either a varargs `apply` factory method or a a nullary Builder-valued method on the target type's companion object.  This is why `AvroType[ArrayBuffer[Int]].io.read(…)` is able to return a `Try[ArrayBuffer[Int]]`, for example.
+Scalavro tries to produce read results whose runtime types are as accurate as possible for collections (the supported collection types are `Seq`, `Set`, and `Map`).  It accomplishes this by looking for either a varargs `apply` factory method or a nullary Builder-valued method on the target type's companion object.  This is why `AvroType[ArrayBuffer[Int]].io.read(…)` is able to return a `Try[ArrayBuffer[Int]]`, for example.
 
 This also works for custom subtypes of the supported collection types -- as long as you define at least one of the acceptable factory methods as described above in the companion you're good to go.
 
