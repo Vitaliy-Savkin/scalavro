@@ -254,6 +254,14 @@ libraryDependencies += "com.gensler" %% "scalavro" % "0.6.2"
       </code></td>
     </tr>
     <tr>
+      <td><em>
+        Scala sealed case objects
+      </em></td>
+      <td><code>
+        enum
+      </code></td>
+    </tr>
+    <tr>
        <td><code>
         scala.util.Either[A, B]
       </code></td>
@@ -418,6 +426,34 @@ Which yields:
   "type" : "enum",
   "symbols" : ["N","NE","E","SE","S","SW","W","NW"],
   "namespace" : "com.gensler.scalavro.test.CardinalDirection"
+}
+```
+
+#### Scala sealed case objects
+
+```scala
+
+package com.gensler.scalavro.test
+import com.gensler.scalavro.types.AvroType
+
+sealed trait Color
+object Color {
+  case object Black extends Color
+  case object White extends Color
+  case object Blue extends Color
+}
+
+AvroType[Color].schema
+```
+
+Which yields:
+
+```json
+{
+  "name" : "Color",
+  "type" : "enum",
+  "symbols":["Black","Blue","White"],
+  "namespace" : "com.gensler.scalavro.test"
 }
 ```
 

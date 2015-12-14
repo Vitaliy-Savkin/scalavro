@@ -43,6 +43,21 @@ trait ReflectionHelpers extends Logging {
     tagForType(enclosing).asInstanceOf[TypeTag[_ <: Enumeration]]
   }
 
+  /**
+    * return name and values of sealed trait enum
+    */
+  def nameAndValues[T: TypeTag]: (String, Map[String, T]) = {
+    val tt = typeTag[T]
+    val children = tt.tpe.typeSymbol.asClass.knownDirectSubclasses.toList
+    if (!children.forall(_.isModuleClass)) {
+      throw new IllegalArgumentException("all children must be objects")
+    }
+    (tt.tpe.typeSymbol.name.toString, children.map(v => (v.name.toString, instanceBySymbol[T](v))).toMap)
+  }
+  private def instanceBySymbol[T](sym: Symbol): T = {
+    classLoaderMirror.runtimeClass(sym.asClass).getField("MODULE$").get(null).asInstanceOf[T]
+  }
+
   import org.reflections.Reflections
 
   private lazy val reflections: Reflections = {

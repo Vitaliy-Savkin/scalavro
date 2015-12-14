@@ -7,12 +7,19 @@ import scala.reflect.runtime.universe._
 
 import com.gensler.scalavro.util.ReflectionHelpers._
 
-class ReflectionHelpersSpec extends FlatSpec with Matchers {
+sealed trait Color
+object Color {
+  case object Black extends Color
+  case object Blue extends Color
+  case object Green extends Color
+}
 
-  object Direction extends Enumeration {
-    type Direction = Value
-    val NORTH, EAST, SOUTH, WEST = Value
-  }
+object Direction extends Enumeration {
+  type Direction = Value
+  val NORTH, EAST, SOUTH, WEST = Value
+}
+
+class ReflectionHelpersSpec extends FlatSpec with Matchers {
 
   "The reflection helpers object" should "return the enumeration tag for a given enum value" in {
     val et = enumForValue[Direction.type#Value]
@@ -39,6 +46,13 @@ class ReflectionHelpersSpec extends FlatSpec with Matchers {
     val defaultArgs = defaultCaseClassValues[Exclamation]
     defaultArgs("word") should equal (Some(default.word))
     defaultArgs("volume") should equal (None)
+  }
+
+  it should "extract name and values for sealed trait enum" in {
+    val (name, values) = nameAndValues[Color]
+    val m: Map[String, Color] = values
+    name should equal("Color")
+    m should equal(Map("Black" -> Color.Black, "Blue" -> Color.Blue, "Green" -> Color.Green))
   }
 
 }

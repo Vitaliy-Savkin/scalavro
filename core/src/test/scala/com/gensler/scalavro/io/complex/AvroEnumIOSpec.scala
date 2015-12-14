@@ -1,5 +1,7 @@
 package com.gensler.scalavro.io.complex.test
 
+import com.gensler.scalavro.test.Direction
+
 import scala.util.{ Try, Success, Failure }
 import scala.reflect.runtime.universe._
 
@@ -13,11 +15,6 @@ import com.gensler.scalavro.error._
 import com.gensler.scalavro.io.AvroTypeIO
 
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
-
-object Direction extends Enumeration {
-  type Direction = Value
-  val NORTH, EAST, SOUTH, WEST = Value
-}
 
 class AvroEnumIOSpec extends FlatSpec with Matchers {
 
