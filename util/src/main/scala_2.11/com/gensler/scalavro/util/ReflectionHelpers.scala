@@ -1,5 +1,7 @@
 package com.gensler.scalavro.util
 
+import com.typesafe.scalalogging.LazyLogging
+
 import scala.collection.immutable.ListMap
 import scala.reflect.api.{ Universe, Mirror, TypeCreator }
 import scala.reflect.ClassTag
@@ -13,7 +15,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
   */
 object ReflectionHelpers extends ReflectionHelpers
 
-trait ReflectionHelpers extends Logging {
+trait ReflectionHelpers extends LazyLogging {
 
   protected[scalavro] val classLoaderMirror = runtimeMirror(getClass.getClassLoader)
 
@@ -43,6 +45,21 @@ trait ReflectionHelpers extends Logging {
     tagForType(enclosing).asInstanceOf[TypeTag[_ <: Enumeration]]
   }
 
+  /**
+    * return name and values of sealed trait enum
+    */
+  def nameAndValues[T: TypeTag]: (String, Map[String, T]) = {
+    val tt = typeTag[T]
+    val children = tt.tpe.typeSymbol.asClass.knownDirectSubclasses.toList
+    if (!children.forall(_.isModuleClass)) {
+      throw new IllegalArgumentException("all children must be objects")
+    }
+    (tt.tpe.typeSymbol.name.toString, children.map(v => (v.name.toString, instanceBySymbol[T](v))).toMap)
+  }
+  private def instanceBySymbol[T](sym: Symbol): T = {
+    classLoaderMirror.runtimeClass(sym.asClass).getField("MODULE$").get(null).asInstanceOf[T]
+  }
+
   import org.reflections.Reflections
 
   private lazy val reflections: Reflections = {
@@ -64,7 +81,7 @@ trait ReflectionHelpers extends Logging {
 
     val reflectionsExcludedPackages = config.getStringList("reflections-excluded-packages")
 
-    log.debug(
+    logger.debug(
       "Reflections class loader scanner will ignore the following packages:\n    {}\n",
       reflectionsExcludedPackages.mkString("\n    ")
     )

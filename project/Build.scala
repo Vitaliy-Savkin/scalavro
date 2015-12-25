@@ -22,8 +22,8 @@ object Common {
   val SCALATEST_VERSION = "2.2.0"
   val REFLECTIONS_VERSION = "0.9.9-RC1"
   val TYPESAFE_CONFIG_VERSION = "1.0.2"
-  val SLF4J_VERSION   = "1.7.7"
-  val LOGBACK_VERSION = "1.1.2"
+  val SLF4J_VERSION   = "1.7.12"
+  val SCALA_LOGGING_VERSION = "3.1.0"
 
   val commonSettings =
     net.virtualvoid.sbt.graph.Plugin.graphSettings ++

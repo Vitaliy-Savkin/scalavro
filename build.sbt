@@ -30,8 +30,8 @@ scalaVersion in ThisBuild := Common.LATEST_SCALA_VERSION
 crossScalaVersions in ThisBuild := Seq(Common.MAINTENANCE_SCALA_VERSION, Common.LATEST_SCALA_VERSION)
 
 libraryDependencies in ThisBuild ++= Seq(
-      "org.slf4j" % "slf4j-api" % Common.SLF4J_VERSION,
-      "ch.qos.logback" % "logback-classic" % Common.LOGBACK_VERSION % "runtime",
+      "org.slf4j" % "slf4j-simple" % Common.SLF4J_VERSION,
+      "com.typesafe.scala-logging" %% "scala-logging" % Common.SCALA_LOGGING_VERSION,
       "org.scalatest" %% "scalatest" % Common.SCALATEST_VERSION % "test"
     )
 

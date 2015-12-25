@@ -47,7 +47,7 @@ val io: AvroTypeIO[Seq[Int]] = intSeqType.io
 
 // binary I/O
 io.write(Seq(1, 2, 3), outputStream)
-val Sucess(readResult) = io read inputStream
+val Success(readResult) = io read inputStream
 
 // json I/O
 val json = io writeJson Seq(1, 2, 3) // [1,2,3]
@@ -254,6 +254,14 @@ libraryDependencies += "com.gensler" %% "scalavro" % "0.6.2"
       </code></td>
     </tr>
     <tr>
+      <td><em>
+        Scala sealed case objects
+      </em></td>
+      <td><code>
+        enum
+      </code></td>
+    </tr>
+    <tr>
        <td><code>
         scala.util.Either[A, B]
       </code></td>
@@ -418,6 +426,34 @@ Which yields:
   "type" : "enum",
   "symbols" : ["N","NE","E","SE","S","SW","W","NW"],
   "namespace" : "com.gensler.scalavro.test.CardinalDirection"
+}
+```
+
+#### Scala sealed case objects
+
+```scala
+
+package com.gensler.scalavro.test
+import com.gensler.scalavro.types.AvroType
+
+sealed trait Color
+object Color {
+  case object Black extends Color
+  case object White extends Color
+  case object Blue extends Color
+}
+
+AvroType[Color].schema
+```
+
+Which yields:
+
+```json
+{
+  "name" : "Color",
+  "type" : "enum",
+  "symbols":["Black","Blue","White"],
+  "namespace" : "com.gensler.scalavro.test"
 }
 ```
 
@@ -911,7 +947,7 @@ santaListType.io.readJson(json) match {
 
 ### A Neat Fact about Scalavro's IO Capabilities
 
-Scalavro tries to produce read results whose runtime types are as accurate as possible for collections (the supported collection types are `Seq`, `Set`, and `Map`).  It accomplishes this by looking for either a varargs `apply` factory method or a a nullary Builder-valued method on the target type's companion object.  This is why `AvroType[ArrayBuffer[Int]].io.read(…)` is able to return a `Try[ArrayBuffer[Int]]`, for example.
+Scalavro tries to produce read results whose runtime types are as accurate as possible for collections (the supported collection types are `Seq`, `Set`, and `Map`).  It accomplishes this by looking for either a varargs `apply` factory method or a nullary Builder-valued method on the target type's companion object.  This is why `AvroType[ArrayBuffer[Int]].io.read(…)` is able to return a `Try[ArrayBuffer[Int]]`, for example.
 
 This also works for custom subtypes of the supported collection types -- as long as you define at least one of the acceptable factory methods as described above in the companion you're good to go.
 

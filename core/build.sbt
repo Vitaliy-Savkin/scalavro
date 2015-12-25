@@ -17,7 +17,8 @@ libraryDependencies := {
   }
   deps ++ Seq(
     "io.spray" %% "spray-json" % Common.SPRAY_JSON_VERSION,
-    "org.apache.avro" % "avro" % Common.AVRO_VERSION
+    "org.apache.avro" % "avro" % Common.AVRO_VERSION,
+    "com.jayway.jsonpath" % "json-path" % "2.0.0" % "test"
   )
 }
 
@@ -26,4 +27,3 @@ unmanagedSourceDirectories in Compile += {
   println((sourceDirectory in Compile).value)
   (sourceDirectory in Compile).value / s"scala_2.$majorVersion"
 }
-

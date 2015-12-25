@@ -2,7 +2,6 @@ package com.gensler.scalavro.io
 
 import com.gensler.scalavro.error._
 import com.gensler.scalavro.types.{ AvroType, AvroPrimitiveType }
-import com.gensler.scalavro.util.Logging
 
 import org.apache.avro.io.{
   EncoderFactory,
@@ -19,7 +18,7 @@ import spray.json._
 
 import java.io.{ InputStream, OutputStream }
 
-abstract class AvroTypeIO[T: TypeTag] extends Logging {
+abstract class AvroTypeIO[T: TypeTag] {
 
   /**
     * Returns the corresponding AvroType to this AvroTypeIO wrapper.
@@ -132,7 +131,7 @@ object AvroTypeIO {
   import com.gensler.scalavro.io.complex._
 
   // primitive types
-  def avroTypeToIO[T](avroType: AvroPrimitiveType[T]): AvroTypeIO[T] =
+  private def avroTypeToIO[T](avroType: AvroPrimitiveType[T]): AvroTypeIO[T] =
     avroType match {
       case AvroBoolean       => AvroBooleanIO
       case AvroBytes         => AvroBytesIO
@@ -161,30 +160,32 @@ object AvroTypeIO {
     }
 
   // complex types
-  def avroTypeToIO[T, S <: Seq[T]](array: AvroArray[T, S]): AvroArrayIO[T, S] = AvroArrayIO(array)
-  def avroTypeToIO[T](array: AvroJArray[T]): AvroJArrayIO[T] = AvroJArrayIO(array)
-  def avroTypeToIO[T, S <: Set[T]](set: AvroSet[T, S]): AvroSetIO[T, S] = AvroSetIO(set)
-  def avroTypeToIO[T <: Enumeration](enum: AvroEnum[T]): AvroEnumIO[T] = AvroEnumIO(enum)
-  def avroTypeToIO[T](enum: AvroJEnum[T]): AvroJEnumIO[T] = AvroJEnumIO(enum)
-  def avroTypeToIO[T <: FixedData](fixed: AvroFixed[T]): AvroFixedIO[T] = AvroFixedIO(fixed)(fixed.tag)
-  def avroTypeToIO[T, M <: Map[String, T]](map: AvroMap[T, M]): AvroMapIO[T, M] = AvroMapIO(map)
-  def avroTypeToIO[T](error: AvroError[T]): AvroRecordIO[T] = AvroRecordIO(error)
-  def avroTypeToIO[T](record: AvroRecord[T]): AvroRecordIO[T] = AvroRecordIO(record)
-  def avroTypeToIO[U <: Union.not[_], T](union: AvroUnion[U, T]): AvroUnionIO[U, T] = AvroUnionIO(union)(union.union.underlyingTag, union.tag)
+  private def avroTypeToIO[T, S <: Seq[T]](array: AvroArray[T, S]): AvroArrayIO[T, S] = AvroArrayIO(array)
+  private def avroTypeToIO[T](array: AvroJArray[T]): AvroJArrayIO[T] = AvroJArrayIO(array)
+  private def avroTypeToIO[T, S <: Set[T]](set: AvroSet[T, S]): AvroSetIO[T, S] = AvroSetIO(set)
+  private def avroTypeToIO[T <: Enumeration](enum: AvroEnum[T]): AvroEnumIO[T] = AvroEnumIO(enum)
+  private def avroTypeToIO[T](enum: AvroJEnum[T]): AvroJEnumIO[T] = AvroJEnumIO(enum)
+  private def avroTypeToIO[T](enum: AvroSealedTraitEnum[T]): AvroSealedTraitEnumIO[T] = AvroSealedTraitEnumIO(enum)
+  private def avroTypeToIO[T <: FixedData](fixed: AvroFixed[T]): AvroFixedIO[T] = AvroFixedIO(fixed)(fixed.tag)
+  private def avroTypeToIO[T, M <: Map[String, T]](map: AvroMap[T, M]): AvroMapIO[T, M] = AvroMapIO(map)
+  private def avroTypeToIO[T](error: AvroError[T]): AvroRecordIO[T] = AvroRecordIO(error)
+  private def avroTypeToIO[T](record: AvroRecord[T]): AvroRecordIO[T] = AvroRecordIO(record)
+  private def avroTypeToIO[U <: Union.not[_], T](union: AvroUnion[U, T]): AvroUnionIO[U, T] = AvroUnionIO(union)(union.union.underlyingTag, union.tag)
 
   def avroTypeToIO[T: TypeTag](at: AvroType[T]): AvroTypeIO[T] = {
     at match {
-      case t: AvroPrimitiveType[_] => avroTypeToIO(t)
-      case t: AvroArray[_, _]      => avroTypeToIO(t)
-      case t: AvroJArray[_]        => avroTypeToIO(t)
-      case t: AvroSet[_, _]        => avroTypeToIO(t)
-      case t: AvroEnum[_]          => avroTypeToIO(t)
-      case t: AvroJEnum[_]         => avroTypeToIO(t)
-      case t: AvroFixed[_]         => avroTypeToIO(t)
-      case t: AvroMap[_, _]        => avroTypeToIO(t)
-      case t: AvroError[_]         => avroTypeToIO(t)
-      case t: AvroRecord[_]        => avroTypeToIO(t)
-      case t: AvroUnion[_, _]      => avroTypeToIO(t)
+      case t: AvroPrimitiveType[_]   => avroTypeToIO(t)
+      case t: AvroArray[_, _]        => avroTypeToIO(t)
+      case t: AvroJArray[_]          => avroTypeToIO(t)
+      case t: AvroSet[_, _]          => avroTypeToIO(t)
+      case t: AvroEnum[_]            => avroTypeToIO(t)
+      case t: AvroJEnum[_]           => avroTypeToIO(t)
+      case t: AvroSealedTraitEnum[_] => avroTypeToIO(t)
+      case t: AvroFixed[_]           => avroTypeToIO(t)
+      case t: AvroMap[_, _]          => avroTypeToIO(t)
+      case t: AvroError[_]           => avroTypeToIO(t)
+      case t: AvroRecord[_]          => avroTypeToIO(t)
+      case t: AvroUnion[_, _]        => avroTypeToIO(t)
     }
   }.asInstanceOf[AvroTypeIO[T]]
 

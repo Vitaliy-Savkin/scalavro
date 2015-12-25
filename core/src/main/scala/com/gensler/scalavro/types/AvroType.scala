@@ -7,7 +7,6 @@ import com.gensler.scalavro.types.complex._
 import com.gensler.scalavro.error._
 import com.gensler.scalavro.JsonSchemaProtocol._
 import com.gensler.scalavro.io.AvroTypeIO
-import com.gensler.scalavro.util.Logging
 
 import scala.collection.mutable
 import scala.util.{ Try, Success, Failure }
@@ -178,7 +177,7 @@ abstract class AvroType[T: TypeTag] extends JsonSchemifiable with CanonicalForm 
 /**
   * Companion object for [[AvroType]].
   */
-object AvroType extends Logging {
+object AvroType {
 
   import com.gensler.scalavro.types.primitive._
   import com.gensler.scalavro.types.complex._
@@ -298,6 +297,12 @@ object AvroType extends Logging {
           // fixed-length data
           else if (tpe <:< typeOf[FixedData])
             AvroFixed.fromType(processedTypes)(tt.asInstanceOf[TypeTag[FixedData]])
+
+          //sealed trait enum
+          else if (tpe.typeSymbol.asClass.isSealed
+            && !tpe.typeSymbol.asClass.knownDirectSubclasses.isEmpty
+            && tpe.typeSymbol.asClass.knownDirectSubclasses.forall(_.isModuleClass))
+            AvroSealedTraitEnum.fromType(processedTypes)(tt)
 
           // case classes
           else if (tpe <:< typeOf[Product] && tpe.typeSymbol.asClass.isCaseClass)
