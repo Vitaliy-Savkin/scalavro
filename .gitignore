@@ -5,3 +5,12 @@ project/*/
 *.pdf
 *DS_Store
 *~
+
+# intellij ignores
+.idea
+*.iml
+.idea_modules
+.classpath
+.project
+RUNNING_PID
+.settings
