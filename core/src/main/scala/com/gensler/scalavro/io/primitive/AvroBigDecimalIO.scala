@@ -21,22 +21,16 @@ trait AvroBigDecimalIO extends AvroPrimitiveTypeIO[BigDecimal] {
 
   override protected[scalavro] def write(
     value: BigDecimal,
-    encoder: BinaryEncoder): Unit = AvroBytesIO.write(value.toBigInt().toByteArray, encoder)
+    encoder: BinaryEncoder): Unit = AvroDoubleIO.write(value.toDouble, encoder)
 
-  protected[scalavro] def read(decoder: BinaryDecoder) =
-    BigDecimal(BigInt(AvroBytesIO.read(decoder).toArray), 0)
+  protected[scalavro] def read(decoder: BinaryDecoder) = AvroDoubleIO.read(decoder)
 
   ////////////////////////////////////////////////////////////////////////////
   // JSON ENCODING
   ////////////////////////////////////////////////////////////////////////////
 
-  def writePrimitiveJson(value: BigDecimal) = JsNumber(value)
+  def writePrimitiveJson(value: BigDecimal) = AvroDoubleIO.writePrimitiveJson(value.toDouble)
 
-  def readJson(json: JsValue) = Try {
-    json match {
-      case JsNumber(value) => value
-      case _               => throw new AvroDeserializationException[BigDecimal]
-    }
-  }
+  def readJson(json: JsValue) = AvroDoubleIO.readJson(json).map(BigDecimal.apply)
 
 }
