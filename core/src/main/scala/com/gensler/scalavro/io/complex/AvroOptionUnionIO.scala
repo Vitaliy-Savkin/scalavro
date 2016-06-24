@@ -24,11 +24,8 @@ private[scalavro] case class AvroOptionUnionIO[U <: Union.not[_]: TypeTag, T <: 
   val NULL_INDEX = 0L
   val NON_NULL_INDEX = 1L
 
-  println("T: " + typeOf[T])
   val TypeRef(_, _, List(innerType)) = typeOf[T]
-  println("innerType: " + innerType)
 
-  println("member Avro types: " + avroType.memberAvroTypes)
   val innerAvroType = avroType.memberAvroTypes.find { at => innerType <:< at.tag.tpe }.get
 
   ////////////////////////////////////////////////////////////////////////////
