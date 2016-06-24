@@ -219,4 +219,18 @@ class AvroTypeSpec extends AvroSpec {
     """.replaceAll("\\s", ""))
   }
 
+  "String with T" should "be transformed to AvroString" in {
+    assert(AvroType[String with T] == AvroString)
+  }
+
+  "class C extends Proxy" should "be transformed to AvroString" in {
+    assert(AvroType[SomeProxy] == AvroString)
+  }
+
+}
+
+trait T
+
+class SomeProxy extends Proxy {
+  override def self: String = "a"
 }

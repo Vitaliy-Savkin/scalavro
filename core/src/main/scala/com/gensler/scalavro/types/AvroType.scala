@@ -212,7 +212,8 @@ object AvroType {
       typeOf[Long] -> AvroLong,
       typeOf[java.lang.Long] -> AvroJavaLong,
       typeOf[String] -> AvroString,
-      typeOf[scala.xml.Node] -> AvroXml
+      typeOf[scala.xml.Node] -> AvroXml,
+      typeOf[java.time.LocalDate] -> AvroLocalDate
     )
 
     // complex type cache table, initially empty
@@ -224,7 +225,9 @@ object AvroType {
           case (cacheTpe, at) if cacheTpe =:= tpe => at
         } orElse {
           complexTypeCache.get(tpe) orElse {
-            complexTypeCache.collectFirst {
+            if (tpe <:< typeOf[String]) Some(AvroString)
+            else if (tpe <:< typeOf[Proxy]) resolve(tpe.member(TermName("self")).asMethod.returnType)
+            else complexTypeCache.collectFirst {
               case (cacheTpe, at) if cacheTpe =:= tpe => at
             }
           }

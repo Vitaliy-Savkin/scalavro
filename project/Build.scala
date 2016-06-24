@@ -7,7 +7,7 @@ object Common {
 
   val ORGANIZATION = "com.gensler"
   val PROJECT_NAME = "scalavro"
-  val PROJECT_VERSION = "0.7.0-SNAPSHOT"
+  val PROJECT_VERSION = "0.7.0"
 
   val LATEST_SCALA_VERSION = "2.11.7"
   val MAINTENANCE_SCALA_VERSION = "2.10.5"
